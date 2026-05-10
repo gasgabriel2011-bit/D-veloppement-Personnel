@@ -45,7 +45,7 @@ export default function CreateHabitModal({ isOpen, onClose, onSave, objectives }
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
             className="fixed bottom-0 left-0 right-0 z-50 md:inset-0 md:flex md:items-center md:justify-center"
             onClick={e => e.stopPropagation()}>
-            <div className="relative w-full md:max-w-lg rounded-t-3xl md:rounded-3xl p-7 space-y-5 overflow-y-auto max-h-[92vh]"
+            <div className="soft-scroll soft-volume relative w-full md:max-w-lg rounded-t-3xl md:rounded-3xl p-7 space-y-5 overflow-y-auto max-h-[92vh]"
               style={{ background: "#FFFFFF", border: "1px solid #E7E0D6" }}>
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-xl font-semibold" style={{ color: "#111111" }}>Nouvelle habitude</h2>

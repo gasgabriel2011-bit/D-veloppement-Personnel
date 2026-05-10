@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import Home from './pages/Home';
 import Pillars from './pages/Pillars';
@@ -13,6 +14,7 @@ import Elan from './pages/Elan';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/pillars" element={<Pillars />} />
@@ -27,6 +29,22 @@ function App() {
       <Toaster />
     </Router>
   );
+}
+
+function ScrollToTop() {
+  const { pathname, search, hash } = useLocation();
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, search, hash]);
+
+  return null;
 }
 
 export default App

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, ChevronRight, Trash2, PauseCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { Plus, Trash2, PauseCircle } from "lucide-react";
 import ObjectiveCard from "../../components/elan/ObjectiveCard";
 import CreateObjectiveModal from "../../components/elan/CreateObjectiveModal";
 import ProgressRing from "../../components/elan/ProgressRing";

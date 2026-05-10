@@ -96,3 +96,77 @@
 html {
   scroll-behavior: smooth;
 }
+
+.soft-scroll {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(184, 155, 94, 0.48) rgba(248, 245, 239, 0.52);
+}
+
+.soft-scroll::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.soft-scroll::-webkit-scrollbar-track {
+  margin-block: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(248, 245, 239, 0.25), rgba(239, 230, 216, 0.7));
+}
+
+.soft-scroll::-webkit-scrollbar-thumb {
+  min-height: 72px;
+  border: 4px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(184, 155, 94, 0.7), rgba(124, 90, 46, 0.42)) content-box;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+}
+
+.soft-scroll::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(184, 155, 94, 0.86), rgba(124, 90, 46, 0.58)) content-box;
+}
+
+.soft-volume {
+  box-shadow:
+    0 22px 48px rgba(48, 36, 22, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.pillar-card-nocturne {
+  background-image:
+    linear-gradient(135deg, rgba(39, 106, 147, 0.08), rgba(123, 104, 168, 0.06) 46%, rgba(255, 255, 255, 0) 47%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(232,243,248,0.72));
+}
+
+.pillar-card-fresh {
+  background-image:
+    linear-gradient(90deg, rgba(31, 111, 159, 0.08) 0 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,248,242,0.72));
+  background-size: 18px 100%, auto;
+}
+
+.pillar-card-studio {
+  background-image:
+    linear-gradient(135deg, rgba(36, 86, 166, 0.1), transparent 38%),
+    repeating-linear-gradient(90deg, rgba(36, 86, 166, 0.08) 0 1px, transparent 1px 42px);
+}
+
+.pillar-card-atelier {
+  background-image:
+    linear-gradient(145deg, rgba(43, 110, 166, 0.09), transparent 34%),
+    linear-gradient(0deg, rgba(185, 130, 66, 0.08), transparent 55%);
+}
+
+.pillar-card-ledger {
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(246,242,232,0.74)),
+    repeating-linear-gradient(0deg, transparent 0 30px, rgba(184, 155, 94, 0.1) 30px 31px);
+}
+
+.pillar-card-salon {
+  background-image:
+    linear-gradient(135deg, rgba(40, 95, 158, 0.1), transparent 42%),
+    linear-gradient(225deg, rgba(156, 84, 117, 0.09), transparent 38%);
+}

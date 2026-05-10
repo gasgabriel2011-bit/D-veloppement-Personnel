@@ -1,16 +1,64 @@
-import { useState, useCallback } from "react";
-import { DEMO_OBJECTIVES, DEMO_HABITS, getTodayHabits, IMPACT_POINTS } from "../data/elanData";
+import { useState, useCallback, useEffect } from "react";
+import { DEMO_OBJECTIVES, DEMO_HABITS } from "../data/elanData";
 
-// Deep clone helper
 const clone = (v) => JSON.parse(JSON.stringify(v));
 
-export function useElan() {
-  const [objectives, setObjectives] = useState(clone(DEMO_OBJECTIVES));
-  const [habits, setHabits] = useState(clone(DEMO_HABITS));
-  const [logs, setLogs] = useState([]); // HabitLog[]
+const defaultStore = () => ({
+  objectives: clone(DEMO_OBJECTIVES),
+  habits: clone(DEMO_HABITS),
+  logs: [],
+  todayStatus: {},
+});
 
-  // Today's habit completion state: { [habitId]: "completed"|"missed"|null }
-  const [todayStatus, setTodayStatus] = useState({});
+const canUseStorage = () => typeof window !== "undefined" && window.localStorage;
+
+function storageKey(accountId) {
+  return `elan.data.${accountId}`;
+}
+
+function readStore(accountId) {
+  if (!accountId || !canUseStorage()) return defaultStore();
+
+  try {
+    const raw = window.localStorage.getItem(storageKey(accountId));
+    return raw ? { ...defaultStore(), ...JSON.parse(raw) } : defaultStore();
+  } catch {
+    return defaultStore();
+  }
+}
+
+function writeStore(accountId, store) {
+  if (!accountId || !canUseStorage()) return;
+  window.localStorage.setItem(storageKey(accountId), JSON.stringify(store));
+}
+
+export function useElan(accountId = null) {
+  const initialStore = readStore(accountId);
+  const [objectives, setObjectives] = useState(initialStore.objectives);
+  const [habits, setHabits] = useState(initialStore.habits);
+  const [logs, setLogs] = useState(initialStore.logs);
+  const [todayStatus, setTodayStatus] = useState(initialStore.todayStatus);
+  const [loadedAccountId, setLoadedAccountId] = useState(accountId);
+
+  useEffect(() => {
+    const nextStore = readStore(accountId);
+    setObjectives(nextStore.objectives);
+    setHabits(nextStore.habits);
+    setLogs(nextStore.logs);
+    setTodayStatus(nextStore.todayStatus);
+    setLoadedAccountId(accountId);
+  }, [accountId]);
+
+  useEffect(() => {
+    if (!accountId || loadedAccountId !== accountId) return;
+
+    writeStore(accountId, {
+      objectives,
+      habits,
+      logs,
+      todayStatus,
+    });
+  }, [accountId, loadedAccountId, objectives, habits, logs, todayStatus]);
 
   // ── Validate a habit ──────────────────────────────────────────────────────
   const validateHabit = useCallback((habitId, status = "completed", value = null, note = null) => {
@@ -79,13 +127,35 @@ export function useElan() {
   }, []);
 
   // ── Derived ───────────────────────────────────────────────────────────────
-  const todayHabits = getTodayHabits().map(h => ({
-    ...habits.find(x => x.id === h.id) || h,
-    todayStatus: todayStatus[h.id] || null,
-  }));
+  const todayDay = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"][new Date().getDay()];
+  const todayHabits = habits
+    .filter(h => h.frequency.days.includes(todayDay) && h.status === "active")
+    .map(h => ({
+      ...h,
+      todayStatus: todayStatus[h.id] || null,
+    }));
 
   const completedToday = todayHabits.filter(h => h.todayStatus === "completed").length;
-  const globalStreak = Math.min(...habits.map(h => h.streak).filter(s => s > 0), 0) || 0;
+  const activeStreaks = habits.map(h => h.streak).filter(s => s > 0);
+  const globalStreak = activeStreaks.length ? Math.min(...activeStreaks) : 0;
+  const totalPoints = objectives.reduce((sum, obj) => sum + (obj.currentPoints || 0), 0);
+  const targetPoints = objectives.reduce((sum, obj) => sum + (obj.targetPoints || 0), 0);
+  const todayKey = new Date().toDateString();
+  const todayPoints = logs
+    .filter(log => new Date(log.date).toDateString() === todayKey)
+    .reduce((sum, log) => sum + (log.pointsEarned || 0), 0);
+  const todayAvailablePoints = todayHabits.reduce((sum, habit) => sum + (habit.impact?.points || 0), 0);
+  const weeklyPotentialPoints = habits
+    .filter(h => h.status === "active")
+    .reduce((sum, habit) => sum + ((habit.impact?.points || 0) * (habit.frequency?.days?.length || 0)), 0);
+  const points = {
+    total: totalPoints,
+    target: targetPoints,
+    progress: targetPoints ? Math.min(100, Math.round((totalPoints / targetPoints) * 100)) : 0,
+    today: todayPoints,
+    todayAvailable: todayAvailablePoints,
+    weeklyPotential: weeklyPotentialPoints,
+  };
 
   return {
     objectives,
@@ -95,6 +165,7 @@ export function useElan() {
     completedToday,
     totalToday: todayHabits.length,
     globalStreak,
+    points,
     validateHabit,
     addObjective, updateObjective, deleteObjective,
     addHabit, updateHabit, deleteHabit,

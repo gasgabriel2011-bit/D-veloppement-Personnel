@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import HabitCardToday from "../../components/elan/HabitCardToday";
+import InstallPromptCard from "../../components/elan/InstallPromptCard";
 
 function greeting() {
   const h = new Date().getHours();
@@ -37,6 +38,8 @@ export default function ElanToday({ todayHabits, completedToday, totalToday, obj
         </h1>
         <p className="text-sm" style={{ color: "#6F6A61" }}>{phrase}</p>
       </motion.div>
+
+      <InstallPromptCard />
 
       {/* Overview card */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}

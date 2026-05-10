@@ -6,12 +6,24 @@ import ElanHabitudes from "./elan/ElanHabitudes";
 import ElanAnalyse from "./elan/ElanAnalyse";
 import ElanProfil from "./elan/ElanProfil";
 import { useElan } from "../hooks/useElan";
+import { useElanAccount } from "../hooks/useElanAccount";
+import ElanAccountGate from "../components/elan/ElanAccountGate";
 
 export default function Elan() {
-  const store = useElan();
+  const accountStore = useElanAccount();
+  const store = useElan(accountStore.account?.id);
+
+  if (!accountStore.isAuthenticated) {
+    return (
+      <ElanAccountGate
+        onCreateAccount={accountStore.createAccount}
+        onLogin={accountStore.login}
+      />
+    );
+  }
 
   return (
-    <ElanLayout>
+    <ElanLayout account={accountStore.account} onLogout={accountStore.logout}>
       <Routes>
         <Route path="/" element={
           <ElanToday
@@ -43,7 +55,16 @@ export default function Elan() {
         <Route path="/analyse" element={
           <ElanAnalyse habits={store.habits} objectives={store.objectives} />
         } />
-        <Route path="/profil" element={<ElanProfil />} />
+        <Route path="/profil" element={
+          <ElanProfil
+            objectives={store.objectives}
+            habits={store.habits}
+            logs={store.logs}
+            points={store.points}
+            completedToday={store.completedToday}
+            totalToday={store.totalToday}
+          />
+        } />
       </Routes>
     </ElanLayout>
   );

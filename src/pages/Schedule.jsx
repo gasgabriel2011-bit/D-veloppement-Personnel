@@ -129,6 +129,7 @@ export default function Schedule() {
                     <span>{act.emoji}</span>
                     <span>{act.name}</span>
                     <span className="text-[10px] opacity-60">{act.startTime}–{act.endTime}</span>
+                    {act.pointsEstimate ? <span className="text-[10px] font-semibold opacity-80">+{act.pointsEstimate} pts</span> : null}
                     <button onClick={() => removeActivity(act.id)}
                       className="w-4 h-4 rounded-full bg-current/20 flex items-center justify-center hover:bg-current/30 transition-colors">
                       <X className="w-2.5 h-2.5" />

@@ -2,6 +2,7 @@
   "name": "Développement Personnel",
   "short_name": "Dev Perso",
   "description": "Explore les piliers de développement personnel, les habitudes et l'emploi du temps optimal.",
+  "id": "/",
   "lang": "fr",
   "start_url": "/",
   "scope": "/",

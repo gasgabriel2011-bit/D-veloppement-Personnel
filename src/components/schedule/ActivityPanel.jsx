@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, Plus, Trash2 } from "lucide-react";
+import { X, Check, Plus, Trash2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TimePicker from "@/components/ui/TimePicker";
@@ -20,6 +20,7 @@ export default function ActivityPanel({ activity, existingData, onSave, onClose 
   );
   const [notes, setNotes] = useState(existingData?.notes || "");
   const [alreadyDoing, setAlreadyDoing] = useState(!!existingData);
+  const activityPoints = slots.reduce((sum, slot) => sum + (slot.days.length * 2), 0) + (!alreadyDoing && slots.some(slot => slot.days.length > 0) ? 2 : 0);
 
   const updateSlot = (idx, field, val) => {
     setSlots(prev => prev.map((s, i) => i === idx ? { ...s, [field]: val } : s));
@@ -49,6 +50,7 @@ export default function ActivityPanel({ activity, existingData, onSave, onClose 
       startTime: validSlots[0]?.startTime,
       endTime: validSlots[0]?.endTime,
       notes,
+      pointsEstimate: activityPoints,
       color: activity.color || "#6B7280",
       emoji: activity.emoji
     });
@@ -62,7 +64,7 @@ export default function ActivityPanel({ activity, existingData, onSave, onClose 
           className="flex-1 bg-foreground/40 backdrop-blur-sm" onClick={onClose} />
         <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
           transition={{ type: "spring", damping: 30, stiffness: 300 }}
-          className="w-full max-w-sm bg-background border-l border-border overflow-y-auto flex flex-col">
+          className="soft-scroll soft-volume w-full max-w-sm bg-background border-l border-border overflow-y-auto flex flex-col">
 
           {/* Header */}
           <div className="sticky top-0 bg-background/95 backdrop-blur border-b border-border px-6 py-5 flex items-center justify-between z-10">
@@ -147,6 +149,27 @@ export default function ActivityPanel({ activity, existingData, onSave, onClose 
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Notes */}
+            <div className="soft-volume rounded-2xl border p-4"
+              style={{ background: "#FFFFFF", borderColor: "#E7E0D6" }}>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-body font-semibold uppercase tracking-wider text-muted-foreground">
+                    Points de régularité
+                  </p>
+                  <p className="mt-1 font-heading text-3xl font-semibold text-foreground">
+                    +{activityPoints}
+                  </p>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                Une estimation douce, basée sur les jours choisis pour cette activité.
+              </p>
             </div>
 
             {/* Notes */}

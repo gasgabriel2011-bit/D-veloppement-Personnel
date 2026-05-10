@@ -237,7 +237,7 @@ export default function CalendarView({ activities, universalHabits, onUpdateActi
 
       {/* MONTH VIEW */}
       {view === "month" && (
-        <div className="flex-1 overflow-y-auto p-3">
+        <div className="soft-scroll flex-1 overflow-y-auto p-3">
           <div className="grid grid-cols-7 mb-2">
             {DAYS_SHORT.map(d => <div key={d} className="text-center text-xs font-body font-semibold text-muted-foreground py-2">{d}</div>)}
           </div>
